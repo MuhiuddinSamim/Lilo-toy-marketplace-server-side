@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
 
@@ -54,12 +54,23 @@ async function run() {
 
         })
 
-        app.delete('/allToys/:id',async(req,res)=>{
-            const id=req.params.id
-            const query={_id:new ObjectId(id)}
-            const result=await toysCollection.deleteOne(query);
+     
+        // app.delete('/allToys/:id',async(req,res)=>{
+        //     const id=req.params.id
+        //     const query={_id:new ObjectId(id)}
+        //     const result=await toysCollection.deleteOne(query);
+        //     res.send(result);
+        // })
+
+        app.get('/ToyDetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.findOne(query)
+            console.log(result)
+            console.log(query);
             res.send(result);
-        })
+
+        });
 
 
 
