@@ -29,7 +29,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
 
         const toysCollection=client.db("toys").collection('toy')
 
@@ -55,21 +55,34 @@ async function run() {
         })
 
      
-        // app.delete('/allToys/:id',async(req,res)=>{
-        //     const id=req.params.id
-        //     const query={_id:new ObjectId(id)}
-        //     const result=await toysCollection.deleteOne(query);
-        //     res.send(result);
-        // })
+     
 
         app.get('/ToyDetails/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
+            const query = { _id: new ObjectId(id) }  
             const result = await toysCollection.findOne(query)
             console.log(result)
             console.log(query);
             res.send(result);
 
+        });
+
+        app.get("/myToys/:email",async(req,res)=>{
+            console.log(req.params.email);
+            const result = await toysCollection.find({ posted_by: req.params.email }).toArray();
+            res.send(result);
+        })
+
+        app.delete('/deleteToy/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await toysCollection.deleteOne(query);
+
+            if (result.deletedCount === 1) {
+                res.status(200).json({ message: 'Toy deleted successfully!' });
+            } else {
+                res.status(404).json({ message: 'Toy not found.' });
+            }
         });
 
 
